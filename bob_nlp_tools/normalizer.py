@@ -46,7 +46,8 @@ class NormalizerNode(Node):
                 ('model', os.getenv('NLP_MODEL', 'gpt-3.5-turbo'),
                  ParameterDescriptor(description='Model name to use for normalization.')),
 
-                ('instructions', 'Transform to pure JSON format: {"action": "verb", "target": "object"}',
+                ('instructions',
+                 'Transform to pure JSON format: {"action": "verb", "target": "object"}',
                  ParameterDescriptor(description='Normalization instructions for the LLM.'))
             ]
         )
