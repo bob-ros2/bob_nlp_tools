@@ -17,40 +17,67 @@ The package provides several ROS 2 nodes that leverage the semantic driver for h
 ### 1. Semantic Router (`router`)
 Categorizes incoming text messages and routes them to specialized output topics based on their intent.
 
+**Example:**
+```bash
+ros2 run bob_nlp_tools router --ros-args \
+  -p targets:='{"MOV": "Movement commands", "SPE": "Speech requests"}' \
+  -p base_url:="http://localhost:1234/v1"
+```
+
 ### 2. Semantic Filter (`filter`)
 Filters incoming messages based on a natural language criterion. Messages meeting the criterion are published to `topic_out`, others to `topic_rejected`.
+
+**Example:**
+```bash
+ros2 run bob_nlp_tools filter --ros-args \
+  -p criterion:='Handelt es sich um eine Frage zu Bobs Status?' \
+  -p base_url:="http://localhost:1234/v1"
+```
 
 ### 3. Summarizer (`summarizer`)
 Generates concise summaries of incoming messages based on a provided context.
 
+**Example:**
+```bash
+ros2 run bob_nlp_tools summarizer --ros-args \
+  -p context:='Zusammenfassung der letzten Fehlermeldungen' \
+  -p max_words:=20
+```
+
 ### 4. Normalizer (`normalizer`)
 Transforms unstructured input text into a structured format (e.g., JSON) based on descriptive instructions.
 
-### Usage
+**Example:**
 ```bash
-# Start router with custom targets
-ros2 run bob_nlp_tools router --ros-args \
-  -p targets:='{"MOV": "Movement commands", "SPE": "Speech requests"}' \
-  -p base_url:="http://192.168.1.9:8000/v1"
+ros2 run bob_nlp_tools normalizer --ros-args \
+  -p instructions:='Extrahiere Name und Alter als JSON: {"name": "", "age": 0}'
 ```
+
+## Configuration
 
 ### Parameters
 
-| Name | Type | Description |
-|---|---|---|
-| `api_key` | string | API key for the provider. Can also be set via environment variable `NLP_API_KEY`. Default: `not-set`. |
-| `base_url` | string | Base URL for the OpenAI-compatible API. Can also be set via environment variable `NLP_BASE_URL`. Default: `http://localhost:1234/v1`. |
-| `model` | string | Model name to use for routing. Can also be set via environment variable `NLP_MODEL`. Default: `gpt-3.5-turbo`. |
-| `targets` | string (JSON) | JSON dictionary mapping topic suffixes to intent descriptions: `{"key": "Description"}`. |
-| `default_target` | string | Suffix used for unrouted messages. Default: `unrouted`. |
+| Name | Type | Nodes | Description |
+|---|---|---|---|
+| `api_key` | string | all | API key for the provider. Can also be set via environment variable `NLP_API_KEY`. |
+| `base_url` | string | all | Base URL for the OpenAI-compatible API. Default: `http://localhost:1234/v1`. |
+| `model` | string | all | Model name to use. Default: `gpt-3.5-turbo`. |
+| `targets` | string (JSON) | router | JSON dict mapping topic suffixes to intent descriptions: `{"key": "Description"}`. |
+| `default_target` | string | router | Suffix used for unrouted messages. Default: `unrouted`. |
+| `criterion` | string | filter | Natural language condition for the filter. |
+| `context` | string | summarizer | Context for the summarization task. |
+| `max_words` | int | summarizer | Word limit for the summary. Default: 50. |
+| `instructions` | string | normalizer | Descriptive instructions for the normalization task. |
 
 ### Topics
 
-| Name | Type | Description |
-|---|---|---|
-| `topic_in` | `std_msgs/String` | Input topic for messages to be routed. |
-| `~/out/<key>` | `std_msgs/String` | Dynamically created output topics for each target key. |
-| `~/out/<default_target>` | `std_msgs/String` | Fallback topic for messages that couldn't be routed. |
+| Name | Type | Nodes | Description |
+|---|---|---|---|
+| `topic_in` | `std_msgs/String` | all | Input topic for messages to be processed. |
+| `topic_out` | `std_msgs/String` | filter, summarizer, normalizer | Output topic for processed messages. |
+| `topic_rejected` | `std_msgs/String` | filter | Output topic for messages that did not meet the criterion. |
+| `~/out/<key>` | `std_msgs/String` | router | Dynamically created output topics for each target key. |
+| `~/out/<default_target>` | `std_msgs/String` | router | Fallback topic for messages that couldn't be routed. |
 
 ## Installation
 Ensure you have the `requests` library installed:
