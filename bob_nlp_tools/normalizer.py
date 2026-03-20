@@ -37,14 +37,14 @@ class NormalizerNode(Node):
         self.declare_parameters(
             namespace='',
             parameters=[
-                ('api_key', os.getenv('NLP_API_KEY', 'not-set'),
-                 ParameterDescriptor(description='API key for the NLP provider.')),
+                ('api_key', os.getenv('NORMALIZER_API_KEY', 'not-set'),
+                 ParameterDescriptor(description='API key (env: NORMALIZER_API_KEY).')),
 
-                ('base_url', os.getenv('NLP_BASE_URL', 'http://localhost:1234/v1'),
-                 ParameterDescriptor(description='Base URL for the OpenAI-compatible API.')),
+                ('base_url', os.getenv('NORMALIZER_BASE_URL', 'http://localhost:1234/v1'),
+                 ParameterDescriptor(description='Base URL (env: NORMALIZER_BASE_URL).')),
 
-                ('model', os.getenv('NLP_MODEL', 'gpt-3.5-turbo'),
-                 ParameterDescriptor(description='Model name to use for normalization.')),
+                ('model', os.getenv('NORMALIZER_MODEL', 'gpt-3.5-turbo'),
+                 ParameterDescriptor(description='Model name (env: NORMALIZER_MODEL).')),
 
                 ('instructions',
                  'Transform to pure JSON format: {"action": "verb", "target": "object"}',

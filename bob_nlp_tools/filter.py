@@ -37,14 +37,14 @@ class SemanticFilterNode(Node):
         self.declare_parameters(
             namespace='',
             parameters=[
-                ('api_key', os.getenv('NLP_API_KEY', 'not-set'),
-                 ParameterDescriptor(description='API key for the NLP provider.')),
+                ('api_key', os.getenv('FILTER_API_KEY', 'not-set'),
+                 ParameterDescriptor(description='API key (env: FILTER_API_KEY).')),
 
-                ('base_url', os.getenv('NLP_BASE_URL', 'http://localhost:1234/v1'),
-                 ParameterDescriptor(description='Base URL for the OpenAI-compatible API.')),
+                ('base_url', os.getenv('FILTER_BASE_URL', 'http://localhost:1234/v1'),
+                 ParameterDescriptor(description='Base URL (env: FILTER_BASE_URL).')),
 
-                ('model', os.getenv('NLP_MODEL', 'gpt-3.5-turbo'),
-                 ParameterDescriptor(description='Model name to use for filtering.')),
+                ('model', os.getenv('FILTER_MODEL', 'gpt-3.5-turbo'),
+                 ParameterDescriptor(description='Model name (env: FILTER_MODEL).')),
 
                 ('criterion', 'Is a friendly greeting',
                  ParameterDescriptor(description='Semantic criterion for the filter.'))

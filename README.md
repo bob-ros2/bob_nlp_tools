@@ -59,9 +59,9 @@ ros2 run bob_nlp_tools normalizer --ros-args \
 
 | Name | Type | Nodes | Description |
 |---|---|---|---|
-| `api_key` | string | all | API key for the provider. Can also be set via environment variable `NLP_API_KEY`. |
-| `base_url` | string | all | Base URL for the OpenAI-compatible API. Default: `http://localhost:1234/v1`. |
-| `model` | string | all | Model name to use. Default: `gpt-3.5-turbo`. |
+| `api_key` | string | all | API key. env: `<NODE>_API_KEY` (e.g. `ROUTER_API_KEY`). |
+| `base_url` | string | all | API Base URL. Default: `http://localhost:1234/v1`. env: `<NODE>_BASE_URL`. |
+| `model` | string | all | Model name. Default: `gpt-3.5-turbo`. env: `<NODE>_MODEL`. |
 | `targets` | string (JSON) | router | JSON dict mapping topic suffixes to intent descriptions: `{"key": "Description"}`. |
 | `default_target` | string | router | Suffix used for unrouted messages. Default: `unrouted`. |
 | `criterion` | string | filter | Natural language condition for the filter. |

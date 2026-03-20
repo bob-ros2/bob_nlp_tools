@@ -37,14 +37,14 @@ class SummarizerNode(Node):
         self.declare_parameters(
             namespace='',
             parameters=[
-                ('api_key', os.getenv('NLP_API_KEY', 'not-set'),
-                 ParameterDescriptor(description='API key for the NLP provider.')),
+                ('api_key', os.getenv('SUMMARIZER_API_KEY', 'not-set'),
+                 ParameterDescriptor(description='API key (env: SUMMARIZER_API_KEY).')),
 
-                ('base_url', os.getenv('NLP_BASE_URL', 'http://localhost:1234/v1'),
-                 ParameterDescriptor(description='Base URL for the OpenAI-compatible API.')),
+                ('base_url', os.getenv('SUMMARIZER_BASE_URL', 'http://localhost:1234/v1'),
+                 ParameterDescriptor(description='Base URL (env: SUMMARIZER_BASE_URL).')),
 
-                ('model', os.getenv('NLP_MODEL', 'gpt-3.5-turbo'),
-                 ParameterDescriptor(description='Model name to use for summarization.')),
+                ('model', os.getenv('SUMMARIZER_MODEL', 'gpt-3.5-turbo'),
+                 ParameterDescriptor(description='Model name (env: SUMMARIZER_MODEL).')),
 
                 ('context', 'Latest system activity',
                  ParameterDescriptor(description='Context of the summarization task.')),
