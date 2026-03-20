@@ -1,5 +1,5 @@
 #
-# Copyright 2026 BobRos
+# Copyright 2026 Bob Ros
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,5 +18,5 @@
 
 from .driver import NlpSemanticDriver
 
-__version__ = "1.0.0"
-__all__ = ["NlpSemanticDriver"]
+__version__ = '1.0.0'
+__all__ = ['NlpSemanticDriver']

@@ -1,5 +1,5 @@
 #
-# Copyright 2026 BobRos
+# Copyright 2026 Bob Ros
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
 
 import json
 import logging
+
 import requests
 
 
 class NlpSemanticDriver:
     """A standalone, non-ROS driver for semantic NLP tasks via OpenAI-compatible APIs."""
 
-    def __init__(self, api_key, base_url="https://api.openai.com/v1", model="gpt-3.5-turbo",
+    def __init__(self, api_key, base_url='https://api.openai.com/v1', model='gpt-3.5-turbo',
                  timeout=15):
         """Initialize semantic driver."""
         self.api_key = api_key
@@ -30,7 +31,7 @@ class NlpSemanticDriver:
         self.model = model
         self.timeout = timeout
 
-        self.logger = logging.getLogger("NlpSemanticDriver")
+        self.logger = logging.getLogger('NlpSemanticDriver')
         if not self.logger.handlers:
             handler = logging.StreamHandler()
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -41,31 +42,31 @@ class NlpSemanticDriver:
     def ask(self, system_prompt, user_input, temperature=0.0):
         """Perform base chat completion call."""
         headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
+            'Authorization': f'Bearer {self.api_key}',
+            'Content-Type': 'application/json'
         }
 
         payload = {
-            "model": self.model,
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_input}
+            'model': self.model,
+            'messages': [
+                {'role': 'system', 'content': system_prompt},
+                {'role': 'user', 'content': user_input}
             ],
-            "temperature": temperature
+            'temperature': temperature
         }
 
         try:
             response = requests.post(
-                f"{self.base_url}/chat/completions",
+                f'{self.base_url}/chat/completions',
                 headers=headers,
                 data=json.dumps(payload),
                 timeout=self.timeout
             )
             response.raise_for_status()
             data = response.json()
-            return data["choices"][0]["message"]["content"].strip()
+            return data['choices'][0]['message']['content'].strip()
         except Exception as e:
-            self.logger.error(f"API Request failed: {e}")
+            self.logger.error(f'API Request failed: {e}')
             return None
 
     def route(self, content, targets: dict):
@@ -75,12 +76,12 @@ class NlpSemanticDriver:
         Given content and a dict of targets {key: description},
         returns the best matching key.
         """
-        options = "\n".join([f"- {k}: {v}" for k, v in targets.items()])
+        options = '\n'.join([f'- {k}: {v}' for k, v in targets.items()])
         system_prompt = (
-            "You are a semantic router. Analyze the user input and choose exactly ONE key "
-            "from the following list that matches best. Respond ONLY with the raw key name, "
-            "nothing else.\n\n"
-            f"Available Keys:\n{options}"
+            'You are a semantic router. Analyze the user input and choose exactly ONE key '
+            'from the following list that matches best. Respond ONLY with the raw key name, '
+            'nothing else.\n\n'
+            f'Available Keys:\n{options}'
         )
 
         result = self.ask(system_prompt, content)
@@ -94,7 +95,7 @@ class NlpSemanticDriver:
                     return k
         return None
 
-    def filter(self, content, criterion):
+    def semantic_filter(self, content, criterion):
         """Perform semantic check. Returns True if content meets the criterion."""
         system_prompt = (
             f"Analyze the following input. If it matches the criterion '{criterion}', "
@@ -104,23 +105,23 @@ class NlpSemanticDriver:
 
         result = self.ask(system_prompt, content)
         if result:
-            return "YES" in result.upper()
+            return 'YES' in result.upper()
         return False
 
-    def summarize(self, content, context="", max_words=50):
+    def summarize(self, content, context='', max_words=50):
         """Perform semantic summary helper."""
         system_prompt = (
-            f"Summarize the following content in the context of: {context}. "
-            f"The summary must be short, precise and not exceed {max_words} words."
+            f'Summarize the following content in the context of: {context}. '
+            f'The summary must be short, precise and not exceed {max_words} words.'
         )
 
         return self.ask(system_prompt, content)
 
-    def normalize(self, content, instructions="Transform to valid JSON"):
+    def normalize(self, content, instructions='Transform to valid JSON'):
         """Normalize input based on descriptive instructions."""
         system_prompt = (
-            f"Normalize the input according to these instructions: {instructions}. "
-            "Respond ONLY with the clean output, no conversational filler."
+            f'Normalize the input according to these instructions: {instructions}. '
+            'Respond ONLY with the clean output, no conversational filler.'
         )
 
         return self.ask(system_prompt, content)
