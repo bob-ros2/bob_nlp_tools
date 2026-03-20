@@ -11,8 +11,20 @@ The package includes a standalone, ROS-free Python library `NlpSemanticDriver` t
 - **Summarization**: Context-aware text compression.
 - **Normalization**: Structured data extraction.
 
-## ROS Node Semantic Router
-The `semantic_router` node uses the LLM to categorize incoming text messages and routes them to specialized output topics based on their intent.
+## ROS Nodes
+The package provides several ROS 2 nodes that leverage the semantic driver for high-level NLP tasks:
+
+### 1. Semantic Router (`router`)
+Categorizes incoming text messages and routes them to specialized output topics based on their intent.
+
+### 2. Semantic Filter (`filter`)
+Filters incoming messages based on a natural language criterion. Messages meeting the criterion are published to `topic_out`, others to `topic_rejected`.
+
+### 3. Summarizer (`summarizer`)
+Generates concise summaries of incoming messages based on a provided context.
+
+### 4. Normalizer (`normalizer`)
+Transforms unstructured input text into a structured format (e.g., JSON) based on descriptive instructions.
 
 ### Usage
 ```bash
