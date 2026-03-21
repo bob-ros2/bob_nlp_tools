@@ -120,7 +120,20 @@ Normalize the input according to these instructions: {instructions}. Respond ONL
 | `~/out/<default_target>` | `std_msgs/String` | router | Fallback topic for messages that couldn't be routed. |
 
 ## Installation
+
+### 1. Requirements
 Ensure you have the `requests` library installed:
 ```bash
 pip3 install requests
+```
+
+### 2. Build from Source
+Clone the repository into your ROS 2 workspace and build it using `colcon`:
+
+```bash
+cd ~/ros2_ws/src
+git clone https://github.com/bob-ros2/bob_nlp_tools.git
+cd ..
+colcon build --packages-select bob_nlp_tools
+source install/setup.bash
 ```
