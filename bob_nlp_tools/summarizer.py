@@ -46,11 +46,16 @@ class SummarizerNode(Node):
                 ('model', os.getenv('SUMMARIZER_MODEL', 'gpt-3.5-turbo'),
                  ParameterDescriptor(description='Model name (env: SUMMARIZER_MODEL).')),
 
-                ('context', 'Latest system activity',
-                 ParameterDescriptor(description='Context of the summarization task.')),
+                ('context', os.getenv('SUMMARIZER_CONTEXT', 'Latest system activity'),
+                 ParameterDescriptor(description=(
+                     'Context for the summarization task. '
+                     'Can also be set via environment variable SUMMARIZER_CONTEXT.'))),
 
-                ('max_words', 50,
-                 ParameterDescriptor(description='Maximum number of words for the summary.'))
+                ('max_words', int(os.getenv('SUMMARIZER_MAX_WORDS', '50')),
+                 ParameterDescriptor(description=(
+                     'Maximum words for the summary. '
+                     'Can also be set via environment variable SUMMARIZER_MAX_WORDS.')))
+
             ]
         )
 

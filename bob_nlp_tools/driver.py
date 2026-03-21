@@ -16,6 +16,7 @@
 
 import json
 import logging
+import os
 
 import requests
 
@@ -77,12 +78,13 @@ class NlpSemanticDriver:
         returns the best matching key.
         """
         options = '\n'.join([f'- {k}: {v}' for k, v in targets.items()])
-        system_prompt = (
+        default_prompt = (
             'You are a semantic router. Analyze the user input and choose exactly ONE key '
             'from the following list that matches best. Respond ONLY with the raw key name, '
             'nothing else.\n\n'
-            f'Available Keys:\n{options}'
+            'Available Keys:\n{options}'
         )
+        system_prompt = os.getenv('SEMANTIC_SYSTEM_PROMPT', default_prompt).format(options=options)
 
         result = self.ask(system_prompt, content)
         if result and result in targets:
@@ -97,11 +99,13 @@ class NlpSemanticDriver:
 
     def semantic_filter(self, content, criterion):
         """Perform semantic check. Returns True if content meets the criterion."""
-        system_prompt = (
-            f"Analyze the following input. If it matches the criterion '{criterion}', "
+        default_prompt = (
+            "Analyze the following input. If it matches the criterion '{criterion}', "
             "respond with 'YES'. If it does not match, respond with 'NO'. "
             "Respond ONLY with 'YES' or 'NO'."
         )
+        system_prompt = os.getenv('FILTER_SYSTEM_PROMPT', default_prompt)
+        system_prompt = system_prompt.format(criterion=criterion)
 
         result = self.ask(system_prompt, content)
         if result:
@@ -110,18 +114,22 @@ class NlpSemanticDriver:
 
     def summarize(self, content, context='', max_words=50):
         """Perform semantic summary helper."""
-        system_prompt = (
-            f'Summarize the following content in the context of: {context}. '
-            f'The summary must be short, precise and not exceed {max_words} words.'
+        default_prompt = (
+            'Summarize the following content in the context of: {context}. '
+            'The summary must be short, precise and not exceed {max_words} words.'
         )
+        system_prompt = os.getenv('SUMMARIZE_SYSTEM_PROMPT', default_prompt).format(
+            context=context, max_words=max_words)
 
         return self.ask(system_prompt, content)
 
     def normalize(self, content, instructions='Transform to valid JSON'):
         """Normalize input based on descriptive instructions."""
-        system_prompt = (
-            f'Normalize the input according to these instructions: {instructions}. '
+        default_prompt = (
+            'Normalize the input according to these instructions: {instructions}. '
             'Respond ONLY with the clean output, no conversational filler.'
         )
+        system_prompt = os.getenv('NORMALIZE_SYSTEM_PROMPT', default_prompt).format(
+            instructions=instructions)
 
         return self.ask(system_prompt, content)

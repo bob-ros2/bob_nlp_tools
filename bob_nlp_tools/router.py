@@ -47,12 +47,16 @@ class SemanticRouterNode(Node):
                 ('model', os.getenv('ROUTER_MODEL', 'gpt-3.5-turbo'),
                  ParameterDescriptor(description='Model name (env: ROUTER_MODEL).')),
 
-                ('targets', '{"default": "Default catch-all intent"}',
+                ('targets', os.getenv('ROUTER_TARGETS', '{"default": "Default catch-all intent"}'),
                  ParameterDescriptor(description=(
-                     'JSON dictionary of targets: {"topic_suffix": "Description of intent"}.'))),
+                     'JSON dictionary of targets: {"topic_suffix": "Description of intent"}. '
+                     'Can also be set via environment variable ROUTER_TARGETS.'))),
 
-                ('default_target', 'unrouted',
-                 ParameterDescriptor(description='Topic suffix to use if routing fails.'))
+                ('default_target', os.getenv('ROUTER_DEFAULT_TARGET', 'unrouted'),
+                 ParameterDescriptor(description=(
+                     'Topic suffix to use if routing fails. '
+                     'Can also be set via environment variable ROUTER_DEFAULT_TARGET.')))
+
             ]
         )
 

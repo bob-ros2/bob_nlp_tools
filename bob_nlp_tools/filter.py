@@ -46,8 +46,11 @@ class SemanticFilterNode(Node):
                 ('model', os.getenv('FILTER_MODEL', 'gpt-3.5-turbo'),
                  ParameterDescriptor(description='Model name (env: FILTER_MODEL).')),
 
-                ('criterion', 'Is a friendly greeting',
-                 ParameterDescriptor(description='Semantic criterion for the filter.'))
+                ('criterion', os.getenv('FILTER_CRITERION', 'Is a friendly greeting'),
+                 ParameterDescriptor(description=(
+                     'Semantic criterion for the filter. '
+                     'Can also be set via environment variable FILTER_CRITERION.')))
+
             ]
         )
 

@@ -59,15 +59,55 @@ ros2 run bob_nlp_tools normalizer --ros-args \
 
 | Name | Type | Nodes | Description |
 |---|---|---|---|
-| `api_key` | string | all | API key. env: `<NODE>_API_KEY` (e.g. `ROUTER_API_KEY`). |
-| `base_url` | string | all | API Base URL. Default: `http://localhost:1234/v1`. env: `<NODE>_BASE_URL`. |
-| `model` | string | all | Model name. Default: `gpt-3.5-turbo`. env: `<NODE>_MODEL`. |
-| `targets` | string (JSON) | router | JSON dict mapping topic suffixes to intent descriptions: `{"key": "Description"}`. |
-| `default_target` | string | router | Suffix used for unrouted messages. Default: `unrouted`. |
-| `criterion` | string | filter | Natural language condition for the filter. |
-| `context` | string | summarizer | Context for the summarization task. |
-| `max_words` | int | summarizer | Word limit for the summary. Default: 50. |
-| `instructions` | string | normalizer | Descriptive instructions for the normalization task. |
+| `api_key` | string | all | API key. <br>env: `<NODE>_API_KEY` (e.g., `ROUTER_API_KEY`). |
+| `base_url` | string | all | API Base URL. <br>Default: `http://localhost:1234/v1`. <br>env: `<NODE>_BASE_URL`. |
+| `model` | string | all | Model name. <br>Default: `gpt-3.5-turbo`. <br>env: `<NODE>_MODEL`. |
+| `targets` | string (JSON) | router | JSON dictionary mapping topic suffixes to intent descriptions: `{"key": "Description"}`. <br>env: `ROUTER_TARGETS`. |
+| `default_target` | string | router | Suffix used for unrouted messages. <br>Default: `unrouted`. <br>env: `ROUTER_DEFAULT_TARGET`. |
+| `criterion` | string | filter | Natural language condition for filtering. <br>env: `FILTER_CRITERION`. |
+| `context` | string | summarizer | Context for the summarization task. <br>env: `SUMMARIZER_CONTEXT`. |
+| `max_words` | int | summarizer | Word limit for the summary. <br>Default: `50`. <br>env: `SUMMARIZER_MAX_WORDS`. |
+| `instructions` | string | normalizer | Descriptive instructions for normalization. <br>env: `NORMALIZER_INSTRUCTIONS`. |
+
+> [!NOTE] 
+> `<NODE>` placeholder corresponds to the node/binary name in uppercase (`ROUTER`, `FILTER`, `SUMMARIZER`, `NORMALIZER`). Environment variables provide the default values for ROS parameters.
+
+### System Prompts
+The `NlpSemanticDriver` uses system prompts to guide the LLM's behavior. These can be overridden using environment variables. The prompts use placeholders in `{}` that are replaced by the driver during processing.
+
+| Variable | Placeholders | Description |
+|---|---|---|
+| `SEMANTIC_SYSTEM_PROMPT` | `{options}` | Used by the **Router** to categorize messages. |
+| `FILTER_SYSTEM_PROMPT` | `{criterion}` | Used by the **Filter** to evaluate criteria. |
+| `SUMMARIZE_SYSTEM_PROMPT` | `{context}`, `{max_words}` | Used by the **Summarizer**. |
+| `NORMALIZE_SYSTEM_PROMPT` | `{instructions}` | Used by the **Normalizer**. |
+
+#### Default Prompt Examples
+If you override these, ensure you maintain the required placeholders for the dynamic functionality.
+
+**Semantic Router Default:**
+```text
+You are a semantic router. Analyze the user input and choose exactly ONE key from the following list that matches best. Respond ONLY with the raw key name, nothing else.
+
+Available Keys:
+{options}
+```
+
+**Filter Default:**
+```text
+Analyze the following input. If it matches the criterion '{criterion}', respond with 'YES'. If it does not match, respond with 'NO'. Respond ONLY with 'YES' or 'NO'.
+```
+
+**Summarizer Default:**
+```text
+Summarize the following content in the context of: {context}. The summary must be short, precise and not exceed {max_words} words.
+```
+
+**Normalizer Default:**
+```text
+Normalize the input according to these instructions: {instructions}. Respond ONLY with the clean output, no conversational filler.
+```
+
 
 ### Topics
 
